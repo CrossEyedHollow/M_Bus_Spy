@@ -498,8 +498,19 @@ namespace M_Bus_Spy
             if (buffer.Count == telegram.responseLength) //correct response
             {
                 result = buffer.ToArray();
-                Messenger.Enqueue(StandartMessages.SlaveResponded(serialPort, result, request));
-                return ResponseResult.Correct;
+                //Check checksum
+                if (Checksum.Check(result))
+                {
+                    //If the checksum is correct, proceed
+                    Messenger.Enqueue(StandartMessages.SlaveResponded(serialPort, result, request));
+                    return ResponseResult.Correct;
+                }
+                else
+                {
+                    //Return bad checksum
+                    Messenger.Enqueue(StandartMessages.BadChecksum(serialPort, telegram, buffer));
+                    return ResponseResult.Checksum_Error;
+                }
             }
             else if (buffer.Count == 0) //no response
             {

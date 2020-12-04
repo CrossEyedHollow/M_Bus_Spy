@@ -51,6 +51,11 @@ namespace M_Bus_Spy
             return $"[{serialPort.PortNameShort()}]Unexpected response length ({telegram.responseLength}) to telegram: {Convertor.ByteToHex(telegram.request)}, received[{buffer.Count}]: {Convertor.ByteToHex(buffer.ToArray())}";
         }
 
+        public static string BadChecksum(SerialPort serialPort, Telegram telegram, List<byte> buffer)
+        {
+            return $"[{serialPort.PortNameShort()}]Bad checksum received for telegram: {Convertor.ByteToHex(telegram.request)}, received[{buffer.Count}]: {Convertor.ByteToHex(buffer.ToArray())}";
+        }
+
         public static string MissingTable(string name)
         {
             return $"'{name}' not found in settings.xml, proceeding in sniff mode...";
